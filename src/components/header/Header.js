@@ -1,6 +1,9 @@
 import React from "react";
 import "../../../src/index";
 import { NavLink, useNavigate } from "react-router-dom";
+import { auth } from "../../firebase/firebaseConfig";
+import { useAuth } from "../../contexts/authContext";
+import { signOut } from "firebase/auth";
 import { UilSearch } from "@iconscout/react-unicons";
 
 const navigation = [
@@ -22,6 +25,7 @@ const navigation = [
 ];
 
 const Header = () => {
+  const { userInfo } = useAuth();
   const navigate = useNavigate();
   return (
     <header className="container py-10 flex flex-row items-center justify-between">
@@ -65,12 +69,21 @@ const Header = () => {
             className="absolute top-2/4 right-2 -translate-y-2/4 text-[#CFCFCF]"
           ></UilSearch>
         </div>
-        <button
-          onClick={() => navigate("sign-up")}
-          className="transition ease-in-out delay-150 bg-gradient-to-r from-[#00B4AA] to-[#A4D96C] py-4 px-9 rounded-md ml-6 text-white font-semibold hover:bg-gradient-to-r hover:from-[#A4D96C] hover:to-[#00B4AA]"
-        >
-          Sign up
-        </button>
+        {!userInfo ? (
+          <button
+            onClick={() => navigate("sign-up")}
+            className="transition ease-in-out delay-150 bg-gradient-to-r from-[#00B4AA] to-[#A4D96C] py-4 px-9 rounded-md ml-6 text-white font-semibold hover:bg-gradient-to-r hover:from-[#A4D96C] hover:to-[#00B4AA]"
+          >
+            Sign up
+          </button>
+        ) : (
+          <button
+            onClick={() => signOut(auth)}
+            className="transition ease-in-out delay-150 bg-gradient-to-r from-[#00B4AA] to-[#A4D96C] py-4 px-9 rounded-md ml-6 text-white font-semibold hover:bg-gradient-to-r hover:from-[#A4D96C] hover:to-[#00B4AA]"
+          >
+            Sign out
+          </button>
+        )}
       </div>
     </header>
   );
