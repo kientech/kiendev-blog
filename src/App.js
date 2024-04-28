@@ -5,6 +5,8 @@ import HomePage from "./pages/HomePage";
 import BlogPage from "./pages/BlogPage";
 import ContactPage from "./pages/ContactPage";
 import Main from "./components/header/Main";
+import SignUp from "./pages/SignUp";
+import SignIn from "./pages/SignIn";
 
 function App() {
   return (
@@ -22,6 +24,8 @@ function App() {
           <Route path="/blog" element={<BlogPage></BlogPage>}></Route>
           <Route path="/contact" element={<ContactPage></ContactPage>}></Route>
         </Route>
+        <Route path="/sign-up" element={<SignUp></SignUp>}></Route>
+        <Route path="/sign-in" element={<SignIn></SignIn>}></Route>
       </Routes>
     </>
   );

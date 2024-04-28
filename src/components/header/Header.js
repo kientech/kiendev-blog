@@ -37,8 +37,13 @@ const Header = () => {
           <div>
             {navigation.map((item, index) => (
               <NavLink
-                className={({ isActive }) => (isActive ? "text-red-900" : "")}
-                style={{ paddingLeft: "16px", paddingRight: "16px" }}
+                className={({ isActive }) =>
+                  isActive ? "text-[#00B4AA] font-bold" : ""
+                }
+                style={{
+                  paddingLeft: "16px",
+                  paddingRight: "16px",
+                }}
                 key={item.name}
                 to={item.url}
               >
