@@ -7,8 +7,10 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import LoadingSpinner from "../components/loading/LoadingSpinner";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../firebase/firebaseConfig";
+import { auth, db } from "../firebase/firebaseConfig";
 import { useAuth } from "../contexts/authContext";
+import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import { updateProfile } from "firebase/auth";
 
 const schema = yup.object({
   fullname: yup.string().required("Please enter your fullname!!!"),
@@ -20,7 +22,7 @@ const schema = yup.object({
 });
 
 const SignUp = () => {
-  const {userInfo} = useAuth()
+  const { userInfo } = useAuth();
   const navigate = useNavigate();
   const {
     register,
@@ -47,6 +49,18 @@ const SignUp = () => {
     if (!isValid) return;
     await createUserWithEmailAndPassword(auth, values.email, values.password);
 
+    await updateProfile(auth.currentUser, {
+      displayName: values.fullname,
+    });
+
+    const colRef = collection(db, "users");
+    addDoc(colRef, {
+      fullname: values.fullname,
+      email: values.email,
+      password: values.password,
+      createdAt: serverTimestamp(),
+    });
+
     toast.success("Registered successfully 😍😍😍");
     navigate("/");
     // return new Promise((resolve, reject) => {
@@ -58,8 +72,8 @@ const SignUp = () => {
 
   useEffect(() => {
     document.title = "Register KienDev Blog";
-    
-    if (userInfo?.email) navigate('/')
+
+    if (userInfo?.email) navigate("/");
   }, [userInfo]);
 
   return (
@@ -115,7 +129,7 @@ const SignUp = () => {
               <LoadingSpinner />
             </div>
           ) : (
-            "Sign Up"
+            "Sign up"
           )}
         </button>
         <p className="text-center text-sm">
