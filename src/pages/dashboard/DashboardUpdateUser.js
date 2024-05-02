@@ -11,6 +11,7 @@ import "./radio.css";
 import { useAuth } from "../../contexts/authContext";
 import { auth } from "../../firebase/firebaseConfig";
 import { updateProfile } from "firebase/auth";
+
 import {
   getStorage,
   ref,
@@ -18,10 +19,24 @@ import {
   getDownloadURL,
 } from "firebase/storage";
 
-import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  getDoc,
+  serverTimestamp,
+} from "firebase/firestore";
+import { updateDoc } from "firebase/firestore";
+import { doc } from "firebase/firestore";
 
-const DashboardAddUser = () => {
+import { useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+
+const DashboardUpdateUser = () => {
   const [avatar, setAvatar] = useState("");
+  const [params] = useSearchParams();
+  const userId = params.get("id");
+  const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
@@ -36,38 +51,12 @@ const DashboardAddUser = () => {
       username: "",
       email: "",
       password: "",
+      phone: "",
+      birthday: "",
       status: "0",
-      role: "User",
+      role: "0",
     },
   });
-
-  const handleAddUser = async (values) => {
-    const cloneValues = { ...values };
-
-    if (!isValid) return;
-    await createUserWithEmailAndPassword(auth, values.email, values.password);
-
-    handleUploadImage(values.avatar);
-
-    // Update user profile
-    await updateProfile(auth.currentUser, {
-      displayName: values.fullname,
-      photoURL: avatar,
-    });
-
-    const colRef = collection(db, "users");
-    await addDoc(colRef, {
-      ...cloneValues,
-      avatar: avatar,
-      username: slugify(cloneValues.fullname + "-tech", {
-        lower: true,
-        replacement: "",
-      }),
-      createdAt: serverTimestamp(),
-    });
-    toast.success(`Created new user with ${cloneValues.email} successfully!!!`);
-    reset();
-  };
 
   const handleUploadImage = (file) => {
     if (!file) {
@@ -118,14 +107,43 @@ const DashboardAddUser = () => {
     handleUploadImage(file);
   };
 
+  useEffect(() => {
+    async function fetchUser() {
+      const colRef = doc(db, "users", userId);
+      const singleDoc = await getDoc(colRef);
+      setAvatar(singleDoc.data().avatar);
+      reset(singleDoc.data());
+      console.log("🚀 ~ fetchCategory ~ singleDoc:", singleDoc.data());
+    }
+    fetchUser();
+  }, [userId, reset]);
+
+  const handleUpdateUser = async (values) => {
+    const cloneValues = { ...values };
+    handleUploadImage(values.avatar);
+
+    const colRef = doc(db, "users", userId);
+    await updateDoc(colRef, {
+      ...cloneValues,
+      avatar: avatar,
+      username: slugify(cloneValues.fullname + "-tech", {
+        lower: true,
+        replacement: "",
+      }),
+      createdAt: serverTimestamp(),
+    });
+    toast.success("Updated user successfully");
+    navigate("/manage/users");
+  };
+
   return (
     <div className="m-9 mr-0 w-[75%]">
-      <h1 className="font-bold text-3xl text-[#1DC071]">New user</h1>
+      <h1 className="font-bold text-3xl text-[#1DC071]">Update user</h1>
       <span className="text-gray-500 text-sm py-2 inline-block">
-        Create a new user
+        Update user id: {userId}
       </span>
 
-      <form onSubmit={handleSubmit(handleAddUser)}>
+      <form onSubmit={handleSubmit(handleUpdateUser)}>
         <div className="flex flex-row justify-between items-center gap-x-10">
           <div className="w-[50%]">
             <label
@@ -205,6 +223,37 @@ const DashboardAddUser = () => {
             </span>
             <input type="file" name="avatar" onChange={onSelectImage} />
           </label>
+
+          <div className="my-4 w-[50%]">
+            <label htmlFor="phone" className="font-semibold py-2 inline-block">
+              Phone
+            </label>
+            <input
+              type="text"
+              name="phone"
+              id="phone"
+              className="block w-full p-4 outline-none  border border-[#dfdede] transition-all focus:border-[#00B4AA] rounded-lg text-[#00B4AA] focus:bg-white"
+              placeholder="Enter phone"
+              {...register("phone")}
+            />
+          </div>
+
+          <div className="my-4 w-[50%]">
+            <label
+              htmlFor="birthday"
+              className="font-semibold py-2 inline-block"
+            >
+              Date of birth
+            </label>
+            <input
+              type="text"
+              name="birthday"
+              id="birthday"
+              className="block w-full p-4 outline-none  border border-[#dfdede] transition-all focus:border-[#00B4AA] rounded-lg text-[#00B4AA] focus:bg-white"
+              placeholder="Enter birthday"
+              {...register("birthday")}
+            />
+          </div>
         </div>
 
         <button
@@ -217,7 +266,7 @@ const DashboardAddUser = () => {
               <LoadingSpinner />
             </div>
           ) : (
-            "Create new user"
+            "Update user"
           )}
         </button>
       </form>
@@ -225,4 +274,4 @@ const DashboardAddUser = () => {
   );
 };
 
-export default DashboardAddUser;
+export default DashboardUpdateUser;

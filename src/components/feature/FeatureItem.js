@@ -31,7 +31,7 @@ const FeatureItem = ({ data }) => {
           </div>
         </div>
         <div>
-          <NavLink to={data.slug}>
+          <NavLink to={`/${data.slug}`}>
             <h1 className="text-xl font-semibold text-md text-white mt-8">
               {data.title}
             </h1>

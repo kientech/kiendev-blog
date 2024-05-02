@@ -51,7 +51,7 @@ const sideBarNav = [
 
 const SideBar = () => {
   return (
-    <div className="w-[25%]  my-9 flex-col justify-center items-center shadow-md rounded-lg">
+    <div className="w-[25%] max-h-[520px]  my-9 flex-col justify-center items-center shadow-md rounded-lg">
       {sideBarNav.map((item) => {
         if (item.onClick)
           return (

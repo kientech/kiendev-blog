@@ -10,7 +10,7 @@
 
 body {
   margin: 0;
-  font-family: "Montserrat", sans-serif;
+  font-family: "Epilogue", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -23,4 +23,45 @@ code {
 #root {
   max-width: 90%;
   margin: 0 auto;
+}
+
+.ql-toolbar {
+  position: sticky;
+  z-index: 99999;
+  background: #fff;
+}
+
+.entry-block .ql-snow .ql-editor {
+  font-family: "Montserrat", sans-serif;
+}
+
+.entry-block .ql-snow .ql-editor h1 {
+  font-size: 4em;
+  font-weight: bold;
+}
+
+.entry-block .ql-snow .ql-editor h2 {
+  font-size: 3em;
+}
+
+.entry-block .ql-snow .ql-editor p {
+  font-size: 1.5em;
+}
+
+/* --- */
+.entry-block {
+  font-family: "Epilogue", sans-serif;
+}
+
+.entry-block h1 {
+  font-size: 4em;
+  font-weight: bold;
+}
+
+.entry-block h2 {
+  font-size: 3em;
+}
+
+.entry-block p {
+  font-size: 1.5em;
 }

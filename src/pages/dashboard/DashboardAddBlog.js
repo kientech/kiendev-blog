@@ -11,6 +11,10 @@ import { query, serverTimestamp } from "firebase/firestore";
 import { getDocs } from "firebase/firestore";
 import "./radio.css";
 import { useAuth } from "../../contexts/authContext";
+import ReactQuill, { Quill } from "react-quill";
+import "react-quill/dist/quill.snow.css";
+import ImageUploader from "quill-image-uploader";
+import axios from "axios";
 import {
   getStorage,
   ref,
@@ -21,15 +25,43 @@ import {
 import { addDoc, collection, where } from "firebase/firestore";
 import Toggle from "../../components/toggle/Toggle";
 import "react-dropdown/style.css";
+Quill.register("modules/imageUploader", ImageUploader);
 
 const schema = yup.object({
   title: yup.string().required("Please enter a title of post ✍️"),
   // slug: yup.string().required("Please enter a slug"),
 });
 
+const modules = {
+  toolbar: [
+    ["bold", "italic", "underline", "strike"],
+    ["blockquote"],
+    [{ header: 1 }, { header: 2 }], // custom button values
+    [{ list: "ordered" }, { list: "bullet" }],
+    [{ header: [1, 2, 3, 4, 5, 6, false] }],
+    ["link", "image"],
+  ],
+  imageUploader: {
+    upload: async (file) => {
+      const bodyFormData = new FormData();
+      bodyFormData.append("image", file);
+      const response = await axios({
+        method: "post",
+        url: "https://api.imgbb.com/1/upload?key=131f9c926fa8a5a553456a41727c66f4",
+        data: bodyFormData,
+        header: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      return response.data.data.url;
+    },
+  },
+};
+
 const DashboardAddBlog = () => {
   const [categories, setCategories] = useState([]);
   const [valueCategory, setValueCategory] = useState("Blog");
+  const [content, setContent] = useState("");
   const { userInfo } = useAuth();
   const [image, setImage] = useState("");
 
@@ -47,7 +79,7 @@ const DashboardAddBlog = () => {
 
   const handleAddBlog = async (values) => {
     const cloneValues = { ...values };
-    cloneValues.slug = slugify(values.slug || values.title);
+    cloneValues.slug = slugify(values.slug || values.title, { lower: true });
     cloneValues.postStatus = cloneValues.postStatus || "1";
     // cloneValues.category = valueCategory || "Blog";
 
@@ -58,6 +90,7 @@ const DashboardAddBlog = () => {
       image: image,
       category: valueCategory,
       username: userInfo.displayName,
+      content: content,
       createdAt: serverTimestamp(),
     });
     toast.success("Created blog successfully!!!");
@@ -230,6 +263,15 @@ const DashboardAddBlog = () => {
               </option>
             ))}
           </select>
+        </div>
+
+        <div className="mt-10 entry-block">
+          <ReactQuill
+            modules={modules}
+            theme="snow"
+            value={content}
+            onChange={setContent}
+          />
         </div>
 
         <button

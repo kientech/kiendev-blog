@@ -17,6 +17,9 @@ import DashboardManageCategories from "./pages/dashboard/DashboardManageCategori
 import DashboardCategoryUpdate from "./pages/dashboard/DashboardCategoryUpdate";
 import DashboardManageUser from "./pages/dashboard/DashboardManageUser";
 import DashboardAddUser from "./pages/dashboard/DashboardAddUser";
+import DashboardUpdateUser from "./pages/dashboard/DashboardUpdateUser";
+import DashboardManagePosts from "./pages/dashboard/DashboardManagePosts";
+import DashboardUpdatePost from "./pages/dashboard/DashboardUpdatePost";
 
 function App() {
   return (
@@ -68,6 +71,21 @@ function App() {
           <Route
             path="/manage/update-category"
             element={<DashboardCategoryUpdate></DashboardCategoryUpdate>}
+          ></Route>
+
+          <Route
+            path="/manage/update-post"
+            element={<DashboardUpdatePost></DashboardUpdatePost>}
+          ></Route>
+
+          <Route
+            path="/manage/update-user"
+            element={<DashboardUpdateUser></DashboardUpdateUser>}
+          ></Route>
+
+          <Route
+            path="/manage/posts"
+            element={<DashboardManagePosts></DashboardManagePosts>}
           ></Route>
 
           <Route
