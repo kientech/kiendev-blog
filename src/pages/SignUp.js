@@ -9,8 +9,9 @@ import LoadingSpinner from "../components/loading/LoadingSpinner";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth, db } from "../firebase/firebaseConfig";
 import { useAuth } from "../contexts/authContext";
-import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import { setDoc, doc, serverTimestamp } from "firebase/firestore";
 import { updateProfile } from "firebase/auth";
+import slugify from "slugify";
 
 const schema = yup.object({
   fullname: yup.string().required("Please enter your fullname!!!"),
@@ -51,14 +52,24 @@ const SignUp = () => {
 
     await updateProfile(auth.currentUser, {
       displayName: values.fullname,
+      photoURL:
+        "https://cdn.dribbble.com/users/1355613/screenshots/15594500/media/aea41a7cf22d09be0bb41afa85be2f5e.jpg?resize=1600x1200&vertical=center",
     });
 
-    const colRef = collection(db, "users");
-    addDoc(colRef, {
+    // const colRef = collection(db, "users");
+    setDoc(doc(db, "users", auth.currentUser.uid), {
       fullname: values.fullname,
       email: values.email,
       password: values.password,
       createdAt: serverTimestamp(),
+      username: slugify(values.fullname + "-tech", {
+        lower: true,
+        replacement: "",
+      }),
+      avatar:
+        "https://cdn.dribbble.com/users/1355613/screenshots/15594500/media/aea41a7cf22d09be0bb41afa85be2f5e.jpg?resize=1600x1200&vertical=center",
+      status: "0",
+      role: "User",
     });
 
     toast.success("Registered successfully 😍😍😍");

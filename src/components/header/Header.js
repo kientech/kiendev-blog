@@ -78,10 +78,10 @@ const Header = () => {
           </button>
         ) : (
           <button
-            onClick={() => signOut(auth)}
+            onClick={() => navigate("/dashboard")}
             className="transition ease-in-out delay-150 bg-gradient-to-r from-[#00B4AA] to-[#A4D96C] py-4 px-9 rounded-md ml-6 text-white font-semibold hover:bg-gradient-to-r hover:from-[#A4D96C] hover:to-[#00B4AA]"
           >
-            Sign out
+            Dashboard
           </button>
         )}
       </div>

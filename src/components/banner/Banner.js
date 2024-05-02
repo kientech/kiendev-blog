@@ -1,8 +1,10 @@
 import React from "react";
 import { useAuth } from "../../contexts/authContext";
+import { useNavigate } from "react-router-dom";
 
 const Banner = () => {
   const { userInfo } = useAuth();
+  const navigate = useNavigate();
   return (
     <>
       <div className="bg-gradient-to-r from-[#00B4AA] to-[#A4D96C] h-[520px] rounded-lg flex flex-row items-center justify-between p-20">
@@ -31,7 +33,7 @@ const Banner = () => {
             </button>
           ) : (
             <button
-              onClick={() => console.log("get started")}
+              onClick={() => navigate("/manage/add-post")}
               className="transition ease-in-out delay-150  py-4 px-12 rounded-md font-semibold bg-white text-[#00B4AA]"
             >
               Create new post
