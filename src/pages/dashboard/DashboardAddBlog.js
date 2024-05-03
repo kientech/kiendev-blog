@@ -15,16 +15,19 @@ import ReactQuill, { Quill } from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import ImageUploader from "quill-image-uploader";
 import axios from "axios";
+import { UilTrash } from "@iconscout/react-unicons";
 import {
   getStorage,
   ref,
   uploadBytesResumable,
   getDownloadURL,
+  deleteObject,
 } from "firebase/storage";
 
 import { addDoc, collection, where } from "firebase/firestore";
 import Toggle from "../../components/toggle/Toggle";
 import "react-dropdown/style.css";
+
 Quill.register("modules/imageUploader", ImageUploader);
 
 const schema = yup.object({
@@ -60,6 +63,7 @@ const modules = {
 
 const DashboardAddBlog = () => {
   const [categories, setCategories] = useState([]);
+  const [progress, setProgress] = useState(0);
   const [valueCategory, setValueCategory] = useState("Blog");
   const [content, setContent] = useState("");
   const { userInfo } = useAuth();
@@ -69,6 +73,7 @@ const DashboardAddBlog = () => {
     register,
     handleSubmit,
     setValue,
+    getValues,
     formState: { errors, isSubmitting, isValid },
     watch,
     reset,
@@ -103,8 +108,9 @@ const DashboardAddBlog = () => {
     uploadTask.on(
       "state_changed",
       (snapshot) => {
-        const progress =
+        const progressPercent =
           (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        setProgress(progressPercent);
         console.log("Upload is " + progress + "% done");
         switch (snapshot.state) {
           case "paused":
@@ -133,12 +139,29 @@ const DashboardAddBlog = () => {
     const file = e.target.files[0];
     console.log("🚀 ~ onSelectImage ~ file:", file);
     if (!file) return;
-    setValue("image", file);
+    setValue("image_name", file.name);
     handleUploadImage(file);
   };
 
   const handleChange = (event) => {
     setValueCategory(event.target.value);
+  };
+
+  const handleDeleteImage = () => {
+    const storage = getStorage();
+
+    // Create a reference to the file to delete
+    const desertRef = ref(storage, "images/" + getValues("image_name"));
+
+    // Delete the file
+    deleteObject(desertRef)
+      .then(() => {
+        setImage("");
+        setProgress(0);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   useEffect(() => {
@@ -193,7 +216,7 @@ const DashboardAddBlog = () => {
             />
           </div>
         </div>
-        <div className=" flex flex-row justify-between items-center">
+        <div className="flex flex-row justify-between">
           <div>
             <h1 className="font-semibold text-md text-black mb-2">Status</h1>
             <div className="radio-button-container">
@@ -239,13 +262,80 @@ const DashboardAddBlog = () => {
             </div>
           </div>
 
-          <div className="my-8 w-[50%]">
+          {/* <div className="my-8 w-[50%]">
             <label htmlFor="" className="">
               <span className="block font-semibold text-md text-black my-2">
                 Feature image
               </span>
               <input type="file" name="image" onChange={onSelectImage} />
             </label>
+          </div> */}
+
+          <div>
+            <h1 className="font-semibold text-md text-black mb-2">
+              Feature image
+            </h1>
+
+            <div className="relative border border-dashed rounded-lg border-gray-400 bg-gray-100 w-[450px] h-[250px] flex justify-center items-center">
+              <label for="file" className="inline-block cursor-pointer">
+                <span className="lex justify-center items-center w-[440px] h-[190px]">
+                  {!progress === 100 || !image ? (
+                    <>
+                      <img
+                        src="/images/feature-image.png"
+                        className="w-24 h-24 object-cover rounded-lg"
+                        alt=""
+                      />
+                      <span className="font-semibold inline-block py-2">
+                        Choose image
+                      </span>
+                    </>
+                  ) : (
+                    <div className="relative group">
+                      <img
+                        src={image}
+                        className="w-[440px] h-[240px] object-cover rounded-lg"
+                        alt=""
+                      />
+                      <button
+                        type="button"
+                        className="opacity-0 group-hover:opacity-100 transition-all absolute top-2/4 right-2/4 translate-x-2/4 -translate-y-2/4 p-4 rounded-full bg-white hover:bg-red-100 shadow-sm"
+                        onClick={handleDeleteImage}
+                      >
+                        <UilTrash
+                          size="30"
+                          className={"font-bold text-sm text-red-400"}
+                        ></UilTrash>
+                      </button>
+                    </div>
+                  )}
+
+                  {/* <img
+                    src="/images/work-room-02.png"
+                    className="w-[440px] h-[190px] object-cover rounded-lg"
+                    alt=""
+                  /> */}
+                </span>
+              </label>
+              <input
+                className="hidden"
+                name="image"
+                {...register("image")}
+                id="file"
+                onChange={onSelectImage}
+                type="file"
+              />
+              {!image && (
+                <>
+                  <div
+                    className="absolute bottom-0 left-0 right-0 h-1 transition-all bg-green-400 z-20 rounded-lg"
+                    style={{
+                      width: `${Math.ceil(progress)}%`,
+                    }}
+                  ></div>
+                </>
+              )}
+            </div>
           </div>
         </div>
 

@@ -9,7 +9,7 @@ const DashboardHeader = () => {
   return (
     <div className="flex justify-between items-center py-4 border-b-2 rounded-lg border-gray-200">
       <div className="w-[20%]">
-        <NavLink>
+        <NavLink to={"/"}>
           <img src="/images/logo.png" className="w-[50px]" alt="" />
         </NavLink>
       </div>
