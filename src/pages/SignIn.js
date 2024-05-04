@@ -6,10 +6,9 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import LoadingSpinner from "../components/loading/LoadingSpinner";
-import { signInWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { auth, db } from "../firebase/firebaseConfig";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../firebase/firebaseConfig";
 import { useAuth } from "../contexts/authContext";
-
 
 const schema = yup.object({
   email: yup.string().required("Please enter your email!"),
@@ -23,8 +22,6 @@ const SignIn = () => {
     register,
     handleSubmit,
     formState: { errors, isSubmitting, isValid },
-    watch,
-    reset,
   } = useForm({
     mode: "onChange",
     resolver: yupResolver(schema),
@@ -43,7 +40,6 @@ const SignIn = () => {
     console.log("🚀 ~ handleSignIn ~ values:", values);
     if (!isValid) return;
     await signInWithEmailAndPassword(auth, values.email, values.password);
-    
 
     toast.success("Sign in successfully 😍😍😍");
     navigate("/");
@@ -58,7 +54,7 @@ const SignIn = () => {
     document.title = "Sign in KienDev Blog";
 
     if (userInfo?.email) navigate("/");
-  }, [userInfo]);
+  }, [userInfo, navigate]);
 
   return (
     <div className="max-w-[600px] mx-auto  my-6">

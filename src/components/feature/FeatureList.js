@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import FeatureItem from "./FeatureItem";
 import { collection, limit, onSnapshot, query } from "firebase/firestore";
-import { where, doc, getDoc } from "firebase/firestore";
+import { where } from "firebase/firestore";
 import { db } from "../../firebase/firebaseConfig";
 import LoadingSpinner from "../loading/LoadingSpinner";
 

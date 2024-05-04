@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import DashboardHeader from "../../components/dashboard/header/DashboardHeader";
 import SideBar from "../../components/dashboard/sidebar/SideBar";
 import { useAuth } from "../../contexts/authContext";

@@ -8,7 +8,6 @@ import {
   collection,
   doc,
   onSnapshot,
-  getDoc,
   deleteDoc,
   limit,
   getDocs,

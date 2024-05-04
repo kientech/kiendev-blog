@@ -1,9 +1,7 @@
 import React from "react";
 import "../../../src/index";
 import { NavLink, useNavigate } from "react-router-dom";
-import { auth } from "../../firebase/firebaseConfig";
 import { useAuth } from "../../contexts/authContext";
-import { signOut } from "firebase/auth";
 import { UilSearch } from "@iconscout/react-unicons";
 
 const navigation = [

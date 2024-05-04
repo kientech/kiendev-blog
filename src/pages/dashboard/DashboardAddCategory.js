@@ -10,8 +10,7 @@ const DashboardAddCategory = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting, isValid },
-    watch,
+    formState: { isSubmitting },
     reset,
   } = useForm({
     mode: "onChange",

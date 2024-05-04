@@ -15,8 +15,7 @@ const DashboardCategoryUpdate = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting, isValid },
-    watch,
+    formState: { isSubmitting },
     reset,
   } = useForm({
     mode: "onChange",
@@ -40,7 +39,7 @@ const DashboardCategoryUpdate = () => {
     const colRef = doc(db, "categories", categoryId);
     await updateDoc(colRef, {
       name: values.name,
-      slug: slugify(values.slug || values.name, {lower: true}),
+      slug: slugify(values.slug || values.name, { lower: true }),
     });
     toast.success("Updated category successfully");
     navigate("/manage/categories");
