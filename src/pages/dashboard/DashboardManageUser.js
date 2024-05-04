@@ -5,8 +5,6 @@ import { db } from "../../firebase/firebaseConfig";
 import { collection, deleteDoc } from "firebase/firestore";
 import ActionDelete from "../../components/actions/ActionDelete";
 import ActionEdit from "../../components/actions/ActionEdit";
-import ActionView from "../../components/actions/ActionView";
-import { getDocs } from "firebase/firestore";
 import { onSnapshot } from "firebase/firestore";
 import { doc } from "firebase/firestore";
 import Swal from "sweetalert2";

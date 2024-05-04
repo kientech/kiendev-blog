@@ -1,24 +1,20 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import React, { useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import LoadingSpinner from "../../components/loading/LoadingSpinner";
 import { db } from "../../firebase/firebaseConfig";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
-import slugify from "slugify";
-import { toast } from "react-toastify";
+import { doc, getDoc } from "firebase/firestore";
 import { postStatus } from "../../constant/constant";
 
 const DashboardUpdatePost = () => {
-  const [categories, setCategories] = useState([]);
   const [params] = useSearchParams();
   const postId = params.get("id");
-  const [valueCategory, setValueCategory] = useState("");
 
   const {
     register,
     handleSubmit,
     reset,
-    formState: { isSubmitting, isValid },
+    formState: { isSubmitting },
   } = useForm({
     mode: "onChange",
   });

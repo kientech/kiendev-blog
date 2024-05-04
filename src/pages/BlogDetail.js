@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { collection, doc, getDoc, onSnapshot } from "firebase/firestore";
+import { collection, onSnapshot } from "firebase/firestore";
 import { db } from "../firebase/firebaseConfig";
 import { useParams } from "react-router-dom";
 import PageNotFound from "./PageNotFound";
 import { query, where } from "firebase/firestore";
-import { NavLink } from "react-router-dom";
-import slugify from "slugify";
 import parse from "html-react-parser";
 
 const BlogDetail = () => {

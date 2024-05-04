@@ -1,6 +1,6 @@
-import logo from "./logo.svg";
+
 import "./App.css";
-import { Outlet, Route, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import BlogPage from "./pages/BlogPage";
 import ContactPage from "./pages/ContactPage";

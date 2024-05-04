@@ -1,16 +1,10 @@
 import React, { useEffect, useState } from "react";
-import * as yup from "yup";
 import { db } from "../../firebase/firebaseConfig";
-import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
-import { createUserWithEmailAndPassword } from "firebase/auth";
 import LoadingSpinner from "../../components/loading/LoadingSpinner";
 import { toast } from "react-toastify";
 import slugify from "slugify";
 import "./radio.css";
-import { useAuth } from "../../contexts/authContext";
-import { auth } from "../../firebase/firebaseConfig";
-import { updateProfile } from "firebase/auth";
 
 import {
   getStorage,
@@ -19,12 +13,7 @@ import {
   getDownloadURL,
 } from "firebase/storage";
 
-import {
-  addDoc,
-  collection,
-  getDoc,
-  serverTimestamp,
-} from "firebase/firestore";
+import { getDoc, serverTimestamp } from "firebase/firestore";
 import { updateDoc } from "firebase/firestore";
 import { doc } from "firebase/firestore";
 
@@ -40,8 +29,7 @@ const DashboardUpdateUser = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting, isValid },
-    watch,
+    formState: { isSubmitting },
     reset,
     setValue,
   } = useForm({

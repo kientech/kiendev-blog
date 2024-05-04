@@ -29,8 +29,6 @@ const SignUp = () => {
     register,
     handleSubmit,
     formState: { errors, isSubmitting, isValid },
-    watch,
-    reset,
   } = useForm({
     mode: "onChange",
     resolver: yupResolver(schema),
@@ -85,7 +83,7 @@ const SignUp = () => {
     document.title = "Register KienDev Blog";
 
     if (userInfo?.email) navigate("/");
-  }, [userInfo]);
+  }, [userInfo, navigate]);
 
   return (
     <div className="max-w-[600px] mx-auto  my-6">

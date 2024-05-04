@@ -16,7 +16,6 @@ import "react-quill/dist/quill.snow.css";
 import ImageUploader from "quill-image-uploader";
 import axios from "axios";
 import { UilTrash } from "@iconscout/react-unicons";
-import { doc, getDoc } from "firebase/firestore";
 import {
   getStorage,
   ref,
@@ -75,9 +74,8 @@ const DashboardAddBlog = () => {
     handleSubmit,
     setValue,
     getValues,
-    formState: { errors, isSubmitting, isValid },
+    formState: { isSubmitting },
     watch,
-    reset,
   } = useForm({
     mode: "onChange",
     resolver: yupResolver(schema),
