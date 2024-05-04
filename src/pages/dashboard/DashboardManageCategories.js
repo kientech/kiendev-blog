@@ -180,7 +180,12 @@ const DashboardManageCategories = () => {
       </div>
       <div className="mt-10">
         {total > categories.length ? (
-          <button onClick={handleLoadMoreCategory} className="w-[200px] h-[60px] bg-[#1DC071] text-white font-bold flex justify-center items-center mx-auto rounded-lg">Load more</button>
+          <button
+            onClick={handleLoadMoreCategory}
+            className="w-[200px] h-[60px] bg-[#1DC071] text-white font-bold flex justify-center items-center mx-auto rounded-lg"
+          >
+            Load more
+          </button>
         ) : (
           ""
         )}

@@ -16,6 +16,7 @@ import "react-quill/dist/quill.snow.css";
 import ImageUploader from "quill-image-uploader";
 import axios from "axios";
 import { UilTrash } from "@iconscout/react-unicons";
+import { doc, getDoc } from "firebase/firestore";
 import {
   getStorage,
   ref,
@@ -64,7 +65,7 @@ const modules = {
 const DashboardAddBlog = () => {
   const [categories, setCategories] = useState([]);
   const [progress, setProgress] = useState(0);
-  const [valueCategory, setValueCategory] = useState("Blog");
+  const [valueCategory, setValueCategory] = useState("");
   const [content, setContent] = useState("");
   const { userInfo } = useAuth();
   const [image, setImage] = useState("");
@@ -80,10 +81,37 @@ const DashboardAddBlog = () => {
   } = useForm({
     mode: "onChange",
     resolver: yupResolver(schema),
+    defaultValues: {
+      title: "",
+      slug: "",
+      postStatus: "0",
+      hot: false,
+      user: {},
+      category: {},
+    },
   });
+
+  useEffect(() => {
+    async function fetchUser() {
+      const colRef = collection(db, "users");
+      const q = query(colRef, where("email", "==", userInfo.email));
+      const querySnapshot = await getDocs(q);
+      querySnapshot.forEach((doc) => {
+        setValue("user", {
+          id: doc.id,
+          ...doc.data(),
+        });
+      });
+    }
+
+    fetchUser();
+  }, [setValue, userInfo.email]);
+
+  const watchHot = watch("hot");
 
   const handleAddBlog = async (values) => {
     const cloneValues = { ...values };
+    console.log("🚀 ~ handleAddBlog ~ cloneValues:", cloneValues);
     cloneValues.slug = slugify(values.slug || values.title, { lower: true });
     cloneValues.postStatus = cloneValues.postStatus || "1";
     // cloneValues.category = valueCategory || "Blog";
@@ -93,8 +121,6 @@ const DashboardAddBlog = () => {
     await addDoc(colRef, {
       ...cloneValues,
       image: image,
-      category: valueCategory,
-      username: userInfo.displayName,
       content: content,
       createdAt: serverTimestamp(),
     });
@@ -143,8 +169,17 @@ const DashboardAddBlog = () => {
     handleUploadImage(file);
   };
 
-  const handleChange = (event) => {
-    setValueCategory(event.target.value);
+  const handleChange = async (e) => {
+    setValueCategory(e.target.value);
+    const colRef = collection(db, "categories");
+    const q = query(colRef, where("name", "==", valueCategory));
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      setValue("category", {
+        id: doc.id,
+        ...doc.data(),
+      });
+    });
   };
 
   const handleDeleteImage = () => {
@@ -176,12 +211,12 @@ const DashboardAddBlog = () => {
           ...doc.data(),
         });
       });
-      setCategories(result); // Chỉ cập nhật một lần khi tất cả dữ liệu đã được xử lý xong
+      setCategories(result);
       console.log("🚀 ~ getCategories ~ result:", result);
     }
 
     getCategories();
-  }, []); // Đảm bảo useEffect chỉ chạy một lần khi component mount
+  }, []);
 
   return (
     <div className="m-9 w-[75%]">
@@ -260,16 +295,16 @@ const DashboardAddBlog = () => {
                 </label>
               </div>
             </div>
+            <div className="mt-4">
+              <label htmlFor="" className="font-semibold text-md block my-2">
+                Feature blog
+              </label>
+              <Toggle
+                on={watchHot === true}
+                onClick={() => setValue("hot", !watchHot)}
+              ></Toggle>
+            </div>
           </div>
-
-          {/* <div className="my-8 w-[50%]">
-            <label htmlFor="" className="">
-              <span className="block font-semibold text-md text-black my-2">
-                Feature image
-              </span>
-              <input type="file" name="image" onChange={onSelectImage} />
-            </label>
-          </div> */}
 
           <div>
             <h1 className="font-semibold text-md text-black mb-2">
@@ -309,12 +344,6 @@ const DashboardAddBlog = () => {
                       </button>
                     </div>
                   )}
-
-                  {/* <img
-                    src="/images/work-room-02.png"
-                    className="w-[440px] h-[190px] object-cover rounded-lg"
-                    alt=""
-                  /> */}
                 </span>
               </label>
               <input
@@ -340,12 +369,9 @@ const DashboardAddBlog = () => {
         </div>
 
         <div>
-          <label htmlFor="">Hot Blog</label>
-          <Toggle></Toggle>
-        </div>
-
-        <div>
-          <h1>Select a Category</h1>
+          <label htmlFor="" className="font-semibold block text-md">
+            Select a category
+          </label>
           <select value={valueCategory} onChange={handleChange}>
             {categories.map((item) => (
               <option key={item.id} value={item.name}>

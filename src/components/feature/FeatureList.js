@@ -1,17 +1,21 @@
 import React, { useEffect, useState } from "react";
 import FeatureItem from "./FeatureItem";
-import { collection, onSnapshot, query } from "firebase/firestore";
+import { collection, limit, onSnapshot, query } from "firebase/firestore";
 import { where, doc, getDoc } from "firebase/firestore";
 import { db } from "../../firebase/firebaseConfig";
 import LoadingSpinner from "../loading/LoadingSpinner";
 
-const FeatureList = ({ data }) => {
+const FeatureList = () => {
   const [posts, setPosts] = useState([]);
-  const [user, setUser] = useState("");
 
   useEffect(() => {
     const colRef = collection(db, "posts");
-    const q = query(colRef, where("postStatus", "==", "0"));
+    const q = query(
+      colRef,
+      where("postStatus", "==", "0"),
+      where("hot", "==", true),
+      limit(3)
+    );
     onSnapshot(q, (snapshot) => {
       const results = [];
       snapshot.forEach((doc) => {
@@ -19,31 +23,11 @@ const FeatureList = ({ data }) => {
           id: doc.id,
           ...doc.data(),
         });
-        setPosts(results);
       });
+      setPosts(results);
       console.log("🚀 ~ snapshot.forEach ~ results:", results);
     });
   }, []);
-
-  // useEffect(() => {
-  //   if (!data?.userId) {
-  //     console.log("No userId provided.");
-  //     return;
-  //   }
-
-  //   async function fetchUser() {
-  //     const docRef = doc(db, "users", data.userId);
-  //     console.log("🚀 ~ fetchUser ~ docRef:", docRef);
-  //     const docSnap = await getDoc(docRef);
-  //     if (docSnap.exists()) {
-  //       setUser(docSnap.data());
-  //     } else {
-  //       console.log("No user found with id:", data.userId);
-  //       setUser(null);
-  //     }
-  //   }
-  //   fetchUser();
-  // }, [data?.userId]);
 
   return (
     <div className="my-8">

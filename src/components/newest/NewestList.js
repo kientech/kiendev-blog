@@ -12,7 +12,7 @@ const NewestList = () => {
         <NewestItemLatest></NewestItemLatest>
         <div className="bg-[#F3EDFF] rounded-lg px-4 flex flex-col justify-around">
           {[1, 2, 3, 4].map((item) => (
-            <NewestItemChild></NewestItemChild>
+            <NewestItemChild key={item}></NewestItemChild>
           ))}
         </div>
       </div>

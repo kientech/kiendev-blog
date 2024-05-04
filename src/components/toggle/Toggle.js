@@ -1,26 +1,37 @@
-import React, { useState } from "react";
+import React from "react";
+import PropTypes from "prop-types";
 
-const Toggle = () => {
-  // State to manage toggle
-  const [isActive, setIsActive] = useState(false);
-
-  // Toggle function
-  const handleToggle = () => {
-    setIsActive(!isActive);
-  };
+const Toggle = (props) => {
+  const { on, onClick, ...rest } = props;
 
   return (
-    <div
-      className="w-[100px] h-[50px] p-[5px] bg-gray-300 rounded-full flex items-center justify-start cursor-pointer transition-all"
-      onClick={handleToggle}
-    >
+    <label>
+      <input
+        type="checkbox"
+        checked={on}
+        className="hidden"
+        onChange={() => {}}
+        onClick={onClick}
+      />
       <div
-        className={`w-[40px] h-[40px] bg-white rounded-full transition-transform ${
-          isActive ? "translate-x-[50px] bg-green-500" : "translate-x-0"
+        className={`inline-block w-[70px] h-[42px] relative cursor-pointer rounded-full p-1 transition-all ${
+          on ? "bg-green-500" : "bg-gray-300"
         }`}
-      ></div>
-    </div>
+        {...rest}
+      >
+        <span
+          className={`transition-all w-[34px] h-[34px] bg-white rounded-full inline-block ${
+            on ? "translate-x-[28px]" : ""
+          }`}
+        ></span>
+      </div>
+    </label>
   );
+};
+
+Toggle.propTypes = {
+  on: PropTypes.bool,
+  onClick: PropTypes.func,
 };
 
 export default Toggle;
